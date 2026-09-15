@@ -1,0 +1,12 @@
+body {
+  font-family: verdana;
+}
+
+h1, h2, h3 {
+  color: navy;
+}
+
+em {
+  font-weight: bold;
+  font-style: normal;
+}

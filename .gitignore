@@ -220,7 +220,8 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Wing IDE specific
-*.wpu
+# ignore .wpu and .wpr files
+*.wp[ru]
 
 # macOS specific
 .DS_Store
@@ -228,3 +229,5 @@ __marimo__/
 # Project specific
 todo.md
 notes.md
+data/
+experimental/

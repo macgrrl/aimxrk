@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!-- Template for xrk log file output -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="log.css"/>
+  <title>MyChron Log</title>
+</head>
+
+<body>
+  <h1>MyChron Log</h1>
+  {{ from_date }} to {{ to_date }}<p/>
+  <em>Total hours:</em> {{ total_hours }}<p/>
+  <em>Total distance:</em> {{ total_distance }} miles<p/>
+
+  <h2>Maintenance</h2>
+  <em>Last oil change:</em> {{ oil_change_date }}, <em>time since</em>: {{ hours_since_oil_change }} hours<p/>
+  <em>Last clutch maintenance:</em> {{ clutch_maint_date }}, <em>time since</em>: {{ hours_since_clutch_maint }} hours<p/>
+  {{ maint_table_html }}
+
+  <h2>Day Logs</h2>
+  {{ day_table_html }}
+
+
+  <h2>Sessions</h2>
+  {{ session_table_html }}
+
+  <h2>Input Files</h2>
+  <em>Session Log:</em> {{ session_log }}<p/>
+  <em>Maintenance Log:</em> {{ maint_log }}<p/>
+
+  Log generated at {{ log_generated_at }}
+</body>
+</html>
