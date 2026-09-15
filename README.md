@@ -1,7 +1,14 @@
 # Overview
 Python scripts to process AIM XRK files (e.g. from MyChron) and generate session log CSV file, and use this session file along with a maintenance log CSV file to generate a HTML report for maintenance, as well as output tables of the maintenance log, session day log, and full session log.
 
-Uses the [m3rlin45 / libxrk](https://github.com/m3rlin45/libxrk) Python / Rust library to read and process XRK files.
+## Dependencies
+- jinja2
+- [m3rlin45 / libxrk](https://github.com/m3rlin45/libxrk) Python / Rust library to read and process XRK files.
+- pandas
+- pyarrow
+
+## Python Notes
+Uses Python v3.14
 
 # File Structures
 ## CSV Files
@@ -50,13 +57,13 @@ Report file with following structure
 - Total hours and distance
 - Times since last oil change and clutch maintenance
 - Distances since last oil change and clutch maintenance
-- Maintenance log (4 columns)
-- Day log with the following columns, in descending order of Date
+- Maintenance log table (4 columns)
+- Day log table with the following columns, in descending order of Date
     - Date
     - Hours: cumulative hours
     - Distance: cumulative distance in miles
     - Delta Hours: Time difference from the previous session
     - Delta Distance: Distance difference from the previous session
-- Session Log (CSV file columns) in descending order of Date/Time
+- Session Log table (CSV file columns) in descending order of Date/Time
 - Input File paths
-- Data/Time report generated
+- Data/Time report was generated
