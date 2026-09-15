@@ -1,0 +1,23 @@
+[project]
+name = "aim-xrk"
+version = "0.1.0"
+description = "AIM XRK file experimentation with libxrk"
+readme = "README.md"
+authors = [
+    { name = "Kirschen Seah", email = "kirschen@freerangecoder.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "jinja2>=3.1.6",
+    "libxrk>=0.12.0",
+    "numpy>=2.5.1",
+    "pandas>=3.0.5",
+    "pyarrow>=25.0.1",
+]
+
+[project.scripts]
+aim-xrk = "aim_xrk:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"
