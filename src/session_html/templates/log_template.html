@@ -23,12 +23,13 @@
 
 
   <h2>Sessions</h2>
+  <em>Fastest session:</em> {{ fastest_session_date_time }} (Lap #{{ fastest_session_lap }} @ {{ fastest_session_lap_time }})<p/>
   {{ session_table_html }}
 
   <h2>Input Files</h2>
   <em>Session Log:</em> {{ session_log }}<p/>
   <em>Maintenance Log:</em> {{ maint_log }}<p/>
 
-  Log generated at {{ log_generated_at }}
+  Log generated at {{ log_generated_at }} by {{ version_info }}
 </body>
 </html>

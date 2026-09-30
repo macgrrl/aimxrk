@@ -156,6 +156,12 @@ session_data.drop(session_data.loc[session_data[common.laps_field] == -1].index,
 # specify number of decimal places for output
 session_data = session_data.round({common.hours_field: 2, common.distance_field: 2, common.fastest_lap_time_field: 2,})
 
+# grab the row for which the fastest lap time is minimum
+fastest_session = session_data[session_data[common.fastest_lap_time_field] == session_data[common.fastest_lap_time_field].min()]
+fastest_session_date_time = str(fastest_session.index[0])
+fastest_session_lap = fastest_session[common.fastest_lap_field].values[0]
+fastest_session_lap_time = fastest_session[common.fastest_lap_time_field].values[0]
+
 # ensure maintenance data is sorted in index (date) default ascending order
 maint_data.sort_index(inplace=True)
 
@@ -252,11 +258,15 @@ context = {
     'clutch_maint_date': clutch_maint_date,
     'hours_since_clutch_maint': hours_since_clutch_maint,
     'session_log': session_filepath,
+    'fastest_session_date_time': fastest_session_date_time,
+    'fastest_session_lap': fastest_session_lap,
+    'fastest_session_lap_time': fastest_session_lap_time,
     'maint_log': maint_filepath,
     'session_table_html': session_table_html,
     'maint_table_html': maint_table_html,
     'day_table_html': day_table_html,
-    'log_generated_at': dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    'log_generated_at': dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    'version_info': app_name + ' v' + app_version,
 }
 html_output = html_template.render(context)
 
