@@ -265,7 +265,8 @@ context = {
     'session_table_html': session_table_html,
     'maint_table_html': maint_table_html,
     'day_table_html': day_table_html,
-    'log_generated_at': dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    'log_generated_at': dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    'version_info': app_name + ' v' + app_version,
 }
 html_output = html_template.render(context)
 
