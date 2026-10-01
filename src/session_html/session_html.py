@@ -107,8 +107,6 @@ Output
 - tuple: verbose_flag, output_html_filepath, session_filepath, maint_filepath
 '''
 def parse_arguments():
-    # globals: options and arguments
-    #global verbose_flag, output_html_filepath, session_filepath, maint_filepath
 
     parser = argparse.ArgumentParser(prog=app_name, description=app_description)
 
@@ -153,11 +151,6 @@ Output
 - tuple: session DataFrame, maintenance DataFrame
 '''
 def read_input_data(session_filepath, maint_filepath):
-    # globals: options and arguments
-    #global verbose_flag, output_html_filepath, session_filepath, maint_filepath
-
-    # globals: input data
-    #global session_data, maint_data
 
     session_data = pd.read_csv(session_filepath,
                                dtype=common.xrk_log_dtypes,
@@ -191,17 +184,6 @@ Output
 - dictionary for HTML context used in template substitution
 '''
 def process_data(session_data, maint_data):
-    # globals: options and arguments
-    #global verbose_flag, output_html_filepath, session_filepath, maint_filepath
-
-    # globals: input data
-    #global session_data, maint_data
-
-    # globals: generated data
-    #global day_data, first_day, last_day # DataFrames
-    #global fastest_session, fastest_session_date_time, fastest_session_lap, fastest_session_lap_time # fastest session & lap
-    #global oil_change_date, hours_since_oil_change # oil
-    #global clutch_maint_date, hours_since_clutch_maint # clutch
 
     # omit sessions where number of laps is -1
     session_data.drop(session_data.loc[session_data[common.laps_field] == -1].index, inplace=True)
@@ -322,14 +304,6 @@ Output: None
 
 '''
 def generate_html(output_html_filepath, html_context):
-    # globals: options and arguments
-    #global verbose_flag, output_html_filepath, session_filepath, maint_filepath
-
-    # globals: input data
-    #global session_data, maint_data
-
-    # globals: generated data
-    #global day_data, first_day, last_day, fastest_session, fastest_session_date_time, fastest_session_lap, fastest_session_lap_time
 
     # open output file or use stdout
     if len(output_html_filepath) == 0:
