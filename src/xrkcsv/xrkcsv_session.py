@@ -80,50 +80,55 @@ re_hms_pattern = r'(?P<' + re_hours + r'>\d+):(?P<' + re_minutes + r'>\d+):(?P<'
 
 # functions
 
+'''
+Parse options & arguments
 
-# main program
+Input: None
 
-# parse options & arguments
-parser = argparse.ArgumentParser(prog=app_name, description=app_description)
+Output
+- tuple: verbose_flag, output_csv_filepath, xrk_filepaths array
+'''
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog=app_name, description=app_description)
 
-parser.add_argument('-d', '--debug', action='store_true',
-                    help='turn on debugging')
-parser.add_argument('-v', '--verbose', action='store_true',
-                    help='enable verbose mode')
-parser.add_argument('-o', '--output', action='store', default='',
-                    help='output CSV filepath')
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='turn on debugging')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='enable verbose mode')
+    parser.add_argument('-o', '--output', action='store', default='',
+                        help='output CSV filepath')
 
-parser.add_argument('--version', action='version', version='%(prog)s ' + app_version)
+    parser.add_argument('--version', action='version', version='%(prog)s ' + app_version)
 
-parser.add_argument('files', nargs=argparse.REMAINDER, help='Filenames')
+    parser.add_argument('files', nargs=argparse.REMAINDER, help='Filenames')
 
-arguments_namespace, passed_args = parser.parse_known_args()
-arguments_dict = vars(arguments_namespace)
+    arguments_namespace, passed_args = parser.parse_known_args()
+    arguments_dict = vars(arguments_namespace)
 
-dbg.set_debug(arguments_dict['debug'])
-verbose_flag = arguments_dict['verbose']
-output_csv_filepath = arguments_dict['output']
-xrk_filepaths = arguments_dict['files']
+    dbg.set_debug(arguments_dict['debug'])
+    verbose_flag = arguments_dict['verbose']
+    output_csv_filepath = arguments_dict['output']
+    xrk_filepaths = arguments_dict['files']
 
-count_xrk_filepaths = len(xrk_filepaths)
+    dbg.debug_print(
+        f'debug_flag: {dbg.debug_flag()}',
+        f'output_csv_filepath: {output_csv_filepath}',
+        f'xrk_filepaths (count:{len(xrk_filepaths)}): {xrk_filepaths}',
+    )
 
-dbg.debug_print(
-    f'debug_flag: {dbg.debug_flag()}',
-    f'output_csv_filepath: {output_csv_filepath}',
-    f'xrk_filepaths (count:{count_xrk_filepaths}): {xrk_filepaths}',
-)
+    return (verbose_flag, output_csv_filepath, xrk_filepaths)
 
-if count_xrk_filepaths < 1:
-    print('Please provide the paths to the file(s)')
-else:
 
-    if len(output_csv_filepath) == 0:
-        # output file not specified - use stdout
-        output_fd = sys.stdout
-    else:
-        # open the specified output CSV file
-        output_fd = open(output_csv_filepath, mode='w', newline='')
+'''
+Process data
 
+Input
+- xrk_filepaths: array of path strings to XRK files to process
+
+Output
+- CSV data array to be output, format as specified
+'''
+def process_data(xrk_filepaths):
     # Generate the CSV data list
     csv_data = []
 
@@ -190,6 +195,26 @@ else:
                 f'{csv_row}\n',
             )
 
+    return csv_data
+
+
+'''
+Output CSV file
+
+Input
+- csv_data: CSV data array to be output
+- output_csv_filepath: path string to the CSV file to be output. Empty string outputs to stdout
+
+Output: None
+'''
+def output_csv(csv_data, output_csv_filepath):
+    if len(output_csv_filepath) == 0:
+        # output file not specified - use stdout
+        output_fd = sys.stdout
+    else:
+        # open the specified output CSV file
+        output_fd = open(output_csv_filepath, mode='w', newline='')
+
     # create and write the header for the CSV file
     csv_writer = csv.DictWriter(output_fd, fieldnames=common.xrk_log_csv_fieldnames)
     csv_writer.writeheader()
@@ -201,3 +226,24 @@ else:
     # close the output file if it is not stdout
     if output_fd != sys.stdout:
         output_fd.close()
+
+
+
+'''
+main program
+'''
+def main():
+    (verbose_flag, output_csv_filepath, xrk_filepaths) = parse_arguments()
+
+    if len(xrk_filepaths) < 1:
+        print('Please provide the paths to the file(s)')
+    else:
+        csv_data = process_data(xrk_filepaths)
+
+        output_csv(csv_data, output_csv_filepath)
+
+
+# direct file execution
+
+if __name__ == "__main__":
+    main()
