@@ -35,10 +35,13 @@ app_version = '1.0' # application version
 app_description = 'Outputs HTML report from XRK-derived Session data and Maintenance log CSVs'
 
 # filepath argument names
+templates_path = 'templates/'
 session_csv_filepath_arg = 'session_csv_filepath'
 maint_csv_filepath_arg = 'maint_csv_filepath'
 
 log_template_filepath = 'log_template.html'
+log_css_filepath = templates_path + 'log.css'
+log_css_link_text = '<link rel="stylesheet" href="' + log_css_filepath + '"/>'
 
 # table fields
 # daily log
@@ -104,7 +107,7 @@ Parse options & arguments
 Input: None
 
 Output
-- tuple: verbose_flag, output_html_filepath, session_filepath, maint_filepath
+- tuple: verbose_flag, embed_css_flag, output_html_filepath, session_filepath, maint_filepath
 '''
 def parse_arguments():
 
@@ -114,6 +117,8 @@ def parse_arguments():
                         help='turn on debugging')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='enable verbose mode')
+    parser.add_argument('-e', '--embed-css', action='store_true',
+                        help='embed CSS into the output HTML file')
     parser.add_argument('-o', '--output', action='store', default='',
                         help='output HTML filepath')
 
@@ -127,6 +132,7 @@ def parse_arguments():
 
     dbg.set_debug(arguments_dict['debug'])
     verbose_flag = arguments_dict['verbose']
+    embed_css_flag = arguments_dict['embed_css']
     output_html_filepath = arguments_dict['output']
     session_filepath = arguments_dict[session_csv_filepath_arg]
     maint_filepath = arguments_dict[maint_csv_filepath_arg]
@@ -138,7 +144,7 @@ def parse_arguments():
         ''
     )
 
-    return (verbose_flag, output_html_filepath, session_filepath, maint_filepath)
+    return (verbose_flag, embed_css_flag, output_html_filepath, session_filepath, maint_filepath)
 
 
 '''
@@ -303,7 +309,16 @@ Input
 Output: None
 
 '''
-def generate_html(output_html_filepath, html_context):
+def generate_html(embed_css_flag, output_html_filepath, html_context):
+    # handle embedding CSS
+    if embed_css_flag:
+        css_fd = open(log_css_filepath)
+        css_text = '<style>\n' + ''.join(css_fd.readlines()) + '</style>\n'
+        css_fd.close()
+    else:
+        css_text = log_css_link_text
+
+    html_context |= {'css_text': css_text,}
 
     # open output file or use stdout
     if len(output_html_filepath) == 0:
@@ -313,7 +328,7 @@ def generate_html(output_html_filepath, html_context):
         # open the specified output HTML file
         output_fd = open(output_html_filepath, mode='w')
 
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates/'))
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_path))
     html_template = env.get_template(log_template_filepath)
 
     html_output = html_template.render(html_context)
@@ -329,7 +344,7 @@ def generate_html(output_html_filepath, html_context):
 main program
 '''
 def main():
-    (verbose_flag, output_html_filepath, session_filepath, maint_filepath) = parse_arguments()
+    (verbose_flag, embed_css_flag, output_html_filepath, session_filepath, maint_filepath) = parse_arguments()
     html_context = {
         'maint_log': maint_filepath,
         'session_log': session_filepath,
@@ -339,7 +354,7 @@ def main():
 
     html_context |= process_data(session_data, maint_data)
 
-    generate_html(output_html_filepath, html_context)
+    generate_html(embed_css_flag, output_html_filepath, html_context)
 
 
 # direct file execution
